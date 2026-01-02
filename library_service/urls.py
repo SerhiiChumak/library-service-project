@@ -29,7 +29,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/book_service/", include("book_service.urls", namespace="book_service")),
     path("api/user/", include("user.urls", namespace="user")),
-    path("api/borrowings/", include("borrowings_service.urls", namespace="borrowings_service")),
+    path(
+        "api/borrowings_service/",
+        include("borrowings_service.urls", namespace="borrowings_service"),
+    ),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/doc/swagger/",
