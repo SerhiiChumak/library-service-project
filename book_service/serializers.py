@@ -14,4 +14,3 @@ class BookSerializer(serializers.ModelSerializer):
             "inventory",
             "daily_fee",
         )
-
