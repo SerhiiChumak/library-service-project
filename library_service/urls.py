@@ -15,7 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -28,16 +27,14 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(
-        "api/library/users/", include("user.urls", namespace="user")
-    ),
+    path("api/library/users/", include("user.urls", namespace="user")),
     path("api/library/books/", include("book_service.urls", "book-service")),
     path(
         "api/library/borrowings/",
         include("borrowings_service.urls", "borrowings-service"),
     ),
     path(
-        "api/library/telegram/",
+        "api/library/chat_bot/",
         include("chat_bot.urls", namespace="chat-bot"),
     ),
     path(

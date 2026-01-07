@@ -3,6 +3,7 @@ from django.db import transaction
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Borrowing
 from .serializers import BorrowingSerializer
 
@@ -10,19 +11,24 @@ from .serializers import BorrowingSerializer
 class BorrowingViewSet(viewsets.ModelViewSet):
     queryset = Borrowing.objects.all()
     serializer_class = BorrowingSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        """Filtering by user_id and is_active."""
         queryset = self.queryset
-        user_id = self.request.query_params.get("user_id")
-        is_active = self.request.query_params.get("is_active")
 
+        is_active = self.request.query_params.get("is_active")
+        if is_active:
+            if is_active.lower() == "true":
+                queryset = queryset.filter(actual_return_date__isnull=True)
+            elif is_active.lower() == "false":
+                queryset = queryset.filter(actual_return_date__isnull=False)
+
+        if not self.request.user.is_staff:
+            return queryset.filter(user=self.request.user)
+
+        user_id = self.request.query_params.get("user_id")
         if user_id:
             queryset = queryset.filter(user_id=user_id)
-
-        if is_active is not None:
-            is_active = is_active.lower() == "true"
-            queryset = queryset.filter(actual_return_date__isnull=is_active)
 
         return queryset
 
@@ -40,7 +46,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
         if borrowing.actual_return_date:
             return Response(
-                {"This book has already been returned.."},
+                {"detail": "This book has already been returned.."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

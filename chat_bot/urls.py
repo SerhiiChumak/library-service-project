@@ -14,4 +14,4 @@ urlpatterns = [
     path("delete/webhook/", delete_webhook, name="delete_webhook"),
 ]
 
-app_name = "telegram-chat"
+app_name = "chat_bot"
